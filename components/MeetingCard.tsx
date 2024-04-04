@@ -1,10 +1,6 @@
-"use client";
-
 import Image from "next/image";
-
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { avatarImages } from "@/constants";
 import { useToast } from "./ui/use-toast";
 
 interface MeetingCardProps {
@@ -16,6 +12,7 @@ interface MeetingCardProps {
   buttonText?: string;
   handleClick: () => void;
   link: string;
+  userImage?: string; // Make userImage prop optional
 }
 
 const MeetingCard = ({
@@ -27,6 +24,7 @@ const MeetingCard = ({
   handleClick,
   link,
   buttonText,
+  userImage,
 }: MeetingCardProps) => {
   const { toast } = useToast();
 
@@ -41,51 +39,46 @@ const MeetingCard = ({
           </div>
         </div>
       </article>
-      <article className={cn("flex justify-center relative", {})}>
-        <div className="relative flex w-full max-sm:hidden">
-          {avatarImages.map((img, index) => (
+      {userImage && ( // Conditionally render attendee section
+        <article className={cn("flex justify-center relative", {})}>
+          <div className="relative flex w-full max-sm:hidden">
             <Image
-              key={index}
-              src={img}
-              alt="attendees"
+              src={userImage}
+              alt="attendee"
               width={40}
               height={40}
-              className={cn("rounded-full", { absolute: index > 0 })}
-              style={{ top: 0, left: index * 28 }}
+              className="rounded-full"
             />
-          ))}
-          <div className="flex-center absolute left-[136px] size-10 rounded-full border-[5px] border-dark-3 bg-dark-4">
-            +5
           </div>
-        </div>
-        {!isPreviousMeeting && (
-          <div className="flex gap-2">
-            <Button onClick={handleClick} className="rounded bg-blue-1 px-6">
-              {buttonIcon1 && (
-                <Image src={buttonIcon1} alt="feature" width={20} height={20} />
-              )}
-              &nbsp; {buttonText}
-            </Button>
-            <Button
-              onClick={() => {
-                navigator.clipboard.writeText(link);
-                toast({
-                  title: "Link Copied",
-                });
-              }}
-              className="bg-dark-4 px-6"
-            >
-              <Image
-                src="/icons/copy.svg"
-                alt="feature"
-                width={20}
-                height={20}
-              />
-              &nbsp; Copy Link
-            </Button>
-          </div>
-        )}
-      </article>
+          {!isPreviousMeeting && (
+            <div className="flex gap-2">
+              <Button onClick={handleClick} className="rounded bg-blue-1 px-6">
+                {buttonIcon1 && (
+                  <Image src={buttonIcon1} alt="feature" width={20} height={20} />
+                )}
+                &nbsp; {buttonText}
+              </Button>
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(link);
+                  toast({
+                    title: "Link Copied",
+                  });
+                }}
+                className="bg-dark-4 px-6"
+              >
+                <Image
+                  src="/icons/copy.svg"
+                  alt="feature"
+                  width={20}
+                  height={20}
+                />
+                &nbsp; Copy Link
+              </Button>
+            </div>
+          )}
+        </article>
+      )}
     </section>
   );
 };
